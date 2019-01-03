@@ -52,5 +52,3 @@ def get_labelled_data():
 
     input_df.to_csv("training_input.csv")
 
-
-get_labelled_data()
