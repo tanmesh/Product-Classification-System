@@ -19,6 +19,7 @@ def clean_input_data(df):
     print("Tokenizing...")
 
     df.loc[:, 'bread'] = df.apply(lambda row: re.sub('\W+', ' ', row['bread']), axis=1)
+    df.loc[:, 'bread'] = df.apply(lambda row: row['bread'].split(), axis=1)
 
     # TODO remove duplicates
 
@@ -46,9 +47,10 @@ def get_labelled_data():
         if index == 10:
             break
         print("Processing index : %d" % index)
-        list1 = nltk.word_tokenize(row['bread'])
-        if "clothing" in list1:
+        if "clothing" in row['bread']:
             input_df.loc[index, 'label'] = 1
 
     input_df.to_csv("training_input.csv")
 
+
+get_labelled_data()
