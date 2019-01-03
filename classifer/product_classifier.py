@@ -10,49 +10,30 @@ from classifer.generate_training_data import get_labelled_data
 
 
 def do_word_embedding(input_data):
-    # print('Extracting vocab....')
-    # vocab = []
-    # for row in range(len(input_data)):
-    #     list1 = nltk.word_tokenize(input_data.iloc[row])
-    #     for data in list1:
-    #         vocab.append(data)
-    #
     # print("model starts running....")
-    # model = Word2Vec(vocab, min_count=1)
-    # model.train(vocab, total_examples=len(vocab), epochs=1)
+    # model = Word2Vec(input_data, min_count=1)
+    # model.train(input_data, total_examples=len(input_data), epochs=1)
     # model.save("word2vec.model")
     # print("model finished.")
-
     model = Word2Vec.load("word2vec.model")
-    list1 = nltk.word_tokenize(input_data.iloc[0])
-    # print("For " + list[0] + "vector is" + model[list1[0]])
-    print(list1[0])
 
-    X_final = np.zeros((len(input_data), 50, 100))
-
-    # X_tmp = model[input_data[0]]
-    # for i in range(len(input_data)):
-    #     try:
-    #         X_tmp = model[input_data[i]]
-    #     except Exception:
-    #         print(input_data[i])
-    #     column = len(X_tmp)
-    #     X_final[i, 0:column] = X_tmp
-
+    X_final = np.zeros((len(input_data), 100, 100))
+    for i in range(len(input_data)):
+        vec = 0
+        for data in input_data[i]:
+            vec += model[data]
+        X_final[i, :, :] = vec
     return X_final
 
 
 # THIS HAS EVERYTHING
 def product_classifier():
     # get labelled data from csv file
-    # get_labelled_data()
-    # print("Labels generated successfully!")
+    input_df = get_labelled_data()
+    print("Labels generated successfully!")
 
-    input_df = pd.read_csv('training_input.csv')
-
-    print(input_df['bread'][0])
     # word_embedding for raw input data
-    # inputs = do_word_embedding(input_df.loc[:, 'bread'])
+    inputs = do_word_embedding(input_df.loc[:, 'bread'])
     print("data cleaned successfully!")
 
     # # map data for SVM classifier
