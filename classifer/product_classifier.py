@@ -57,6 +57,15 @@ def do_word_embedding(input_data):
     return X_final
 
 
+def do_prediction(classifier):
+    print("Predicting...")
+    data = [['home', 'women', 'jeans', 'forever', '21', 'jeans'],
+            ['home', 'kitchen', 'kitchen', 'dining', 'gas', 'stoves', '']]
+    prd_data = predicting_data(data)
+    prd_array = np.asarray(prd_data[:, :, -1])
+    print(classifier.predict(prd_array))
+
+
 # THIS HAS EVERYTHING
 def product_classifier():
     print("Getting labelled data from csv file...")
@@ -82,12 +91,7 @@ def product_classifier():
     acc = classifier.score(test_input, test_labels)
     print("Accuracy: " + str(acc))
 
-    print("Predicting...")
-    data = [['home', 'women', 'jeans', 'forever', '21', 'jeans'],
-            ['home', 'kitchen', 'kitchen', 'dining', 'gas', 'stoves', '']]
-    prd_data = predicting_data(data)
-    prd_array = np.asarray(prd_data[:, :, -1])
-    print(classifier.predict(prd_array))
+    do_prediction(classifier)
 
 
 product_classifier()

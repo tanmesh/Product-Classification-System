@@ -2,8 +2,6 @@ import re
 
 import pandas as pd
 
-NUMBERS_OF_ROW = 100
-
 
 def clean_input_data(df):
     print('Checking for Null entries : %s' % df.isnull().sum())
@@ -26,34 +24,8 @@ def clean_input_data(df):
     return df
 
 
-def get_labelled_data():
-    print('Reading input data file...')
-    raw_input_df = pd.read_csv("input.csv")
-
-    print("Creating raw input data frame...")
-    raw_input_list = raw_input_df['bread1'].values.tolist() + raw_input_df['bread2'].values.tolist()
-    raw_input_df = pd.DataFrame(raw_input_list, columns=['bread'])
-
-    print("Cleaning raw input data...")
-    input_df = clean_input_data(raw_input_df)
-
-    print("Creating labels...")
-    input_df.loc[:, 'label'] = 0
-
-    # for index, row in input_df.iterrows():
-    #     if index == NUMBERS_OF_ROW:
-    #         break
-    #     print("Processing index : %d" % index)
-    #     if "clothing" in row['bread']:
-    #         input_df.loc[index, 'label'] = 1
-    #
-    # input_df.to_csv("training_input.csv")
-    #
-    # print("Using first ", NUMBERS_OF_ROW, " breads!")
-    # return input_df.loc[0:NUMBERS_OF_ROW, :]
-
+def break_data_equally(input_df, cnt):
     label_0 = label_1 = 0
-    cnt = 100
     list1 = list0 = []
 
     for index, row in input_df.iterrows():
@@ -71,6 +43,40 @@ def get_labelled_data():
             label_0 += 1
 
     list1.extend(list0)
-    new_df = pd.DataFrame(list1, columns=['bread', 'label'])
+    new_df = pd.DataFrame(list1, columns=['bread', 'label'], index=range(len(list1)))
+
+    return new_df
+
+
+def break_according_row_num(input_df, number_of_row):
+    for index, row in input_df.iterrows():
+        if index == number_of_row:
+            break
+        print("Processing index : %d" % index)
+        if "clothing" in row['bread']:
+            input_df.loc[index, 'label'] = 1
+
+    return input_df.loc[0:number_of_row, :]
+
+
+def get_labelled_data():
+    print('Reading input data file...')
+    raw_input_df = pd.read_csv("input.csv")
+
+    print("Creating raw input data frame...")
+    raw_input_list = raw_input_df['bread1'].values.tolist() + raw_input_df['bread2'].values.tolist()
+    raw_input_df = pd.DataFrame(raw_input_list, columns=['bread'])
+
+    print("Cleaning raw input data...")
+    input_df = clean_input_data(raw_input_df)
+
+    print("Creating labels...")
+    input_df.loc[:, 'label'] = 0
+
+    # new_df = break_according_row_num(input_df, 100)
+
+    new_df = break_data_equally(input_df, 100)
+
+    # input_df.to_csv("training_input.csv")
 
     return new_df
