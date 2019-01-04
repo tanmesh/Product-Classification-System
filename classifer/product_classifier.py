@@ -5,25 +5,46 @@ from sklearn.model_selection import train_test_split
 
 from classifer.generate_training_data import get_labelled_data
 
+NUMBERS_OF_ROW = 0
 
-def train_w2v_model(input_data):
+
+def predicting_data(prd_data):
+    model = train_w2v_model(prd_data)
+    final_prd_data = np.zeros((len(prd_data), 50, 100))
+
+    for index in range(len(prd_data)):
+        for data in prd_data[index]:
+            if len(data) == 0:
+                continue
+            try:
+                X_tmp = model[data]
+                col = len(data)
+                final_prd_data[index, 0:col] = X_tmp
+            except Exception as e:
+                print(e)
+                print(data)
+
+    return final_prd_data
+
+
+def train_w2v_model(data):
     print("Model starts running....")
-    data = input_data.loc[:, 'bread']
     model = Word2Vec(data, min_count=1)
     model.train(data, total_examples=len(data), epochs=1)
-    model.save("word2vec.model")
+    # model.save("word2vec.model")
     print("Model finished!")
     return model
 
 
 def do_word_embedding(input_data):
-    # model = train_w2v_model(input_data)
-    model = Word2Vec.load("word2vec.model")
+    data = input_data.loc[:, 'bread']
+    model = train_w2v_model(data)
+    # model = Word2Vec.load("word2vec.model")
 
     X_final = np.zeros((len(input_data), 50, 100))
     for index, row in input_data.iterrows():
-        if index == 100000:
-            break
+        # if index == NUMBERS_OF_ROW:
+        #     break
         if len(row['bread']) == 0:
             continue
         try:
@@ -42,7 +63,7 @@ def product_classifier():
     input_df = get_labelled_data()
     print("Labels generated successfully!")
 
-    print("Doing Word Embedding on the raw input data...")
+    print("Doing word embedding on the raw input data...")
     inputs = do_word_embedding(input_df)
     print("Data cleaned successfully!")
 
@@ -60,6 +81,13 @@ def product_classifier():
     print("Checking the accuracy...")
     acc = classifier.score(test_input, test_labels)
     print("Accuracy: " + str(acc))
+
+    print("Predicting...")
+    data = [['home', 'women', 'jeans', 'forever', '21', 'jeans'],
+            ['home', 'kitchen', 'kitchen', 'dining', 'gas', 'stoves', '']]
+    prd_data = predicting_data(data)
+    prd_array = np.asarray(prd_data[:, :, -1])
+    print(classifier.predict(prd_array))
 
 
 product_classifier()

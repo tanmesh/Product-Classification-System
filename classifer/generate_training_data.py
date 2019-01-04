@@ -2,7 +2,7 @@ import re
 
 import pandas as pd
 
-NUMBERS_OF_ROW = 20
+NUMBERS_OF_ROW = 100
 
 
 def clean_input_data(df):
@@ -40,13 +40,37 @@ def get_labelled_data():
     print("Creating labels...")
     input_df.loc[:, 'label'] = 0
 
+    # for index, row in input_df.iterrows():
+    #     if index == NUMBERS_OF_ROW:
+    #         break
+    #     print("Processing index : %d" % index)
+    #     if "clothing" in row['bread']:
+    #         input_df.loc[index, 'label'] = 1
+    #
+    # input_df.to_csv("training_input.csv")
+    #
+    # print("Using first ", NUMBERS_OF_ROW, " breads!")
+    # return input_df.loc[0:NUMBERS_OF_ROW, :]
+
+    label_0 = label_1 = 0
+    cnt = 100
+    list1 = list0 = []
+
     for index, row in input_df.iterrows():
-        if index == 100000:
+        if label_1 == cnt and label_0 == cnt:
             break
         print("Processing index : %d" % index)
         if "clothing" in row['bread']:
+            if label_1 == cnt:
+                continue
             input_df.loc[index, 'label'] = 1
+            list1.append(input_df.loc[index, :])
+            label_1 += 1
+        elif label_0 != cnt:
+            list0.append(input_df.loc[index, :])
+            label_0 += 1
 
-    input_df.to_csv("training_input.csv")
+    list1.extend(list0)
+    new_df = pd.DataFrame(list1, columns=['bread', 'label'])
 
-    return input_df
+    return new_df
