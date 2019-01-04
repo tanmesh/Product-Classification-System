@@ -44,7 +44,7 @@ def get_labelled_data():
     input_df.loc[:, 'label'] = 0
 
     for index, row in input_df.iterrows():
-        if index == 10:
+        if index == 100000:
             break
         print("Processing index : %d" % index)
         if "clothing" in row['bread']:
