@@ -31,7 +31,7 @@ def train_w2v_model(data):
     print("Model starts running....")
     model = Word2Vec(data, min_count=1)
     model.train(data, total_examples=len(data), epochs=1)
-    # model.save("word2vec.model")
+    model.save("word2vec.model")
     print("Model finished!")
     return model
 
@@ -57,10 +57,7 @@ def do_word_embedding(input_data):
     return X_final
 
 
-def do_prediction(classifier):
-    print("Predicting...")
-    data = [['home', 'women', 'jeans', 'forever', '21', 'jeans'],
-            ['home', 'kitchen', 'kitchen', 'dining', 'gas', 'stoves', '']]
+def do_prediction(classifier, data):
     prd_data = predicting_data(data)
     prd_array = np.asarray(prd_data[:, :, -1])
     print(classifier.predict(prd_array))
@@ -91,7 +88,10 @@ def product_classifier():
     acc = classifier.score(test_input, test_labels)
     print("Accuracy: " + str(acc))
 
-    do_prediction(classifier)
+    # print("Predicting...")
+    # data = [['home', 'women', 'jeans', 'forever', '21', 'jeans'],
+    #         ['home', 'kitchen', 'kitchen', 'dining', 'gas', 'stoves', '']]
+    # do_prediction(classifier, data)
 
 
 product_classifier()

@@ -29,7 +29,7 @@ def break_data_equally(input_df, cnt):
     list1 = list0 = []
 
     for index, row in input_df.iterrows():
-        if label_1 == cnt and label_0 == cnt:
+        if label_1 == cnt and label_0 == cnt or index > len(input_df):
             break
         print("Processing index : %d" % index)
         if "clothing" in row['bread']:
@@ -59,6 +59,15 @@ def break_according_row_num(input_df, number_of_row):
     return input_df.loc[0:number_of_row, :]
 
 
+def run_on_complete_input(input_df):
+    for index, row in input_df.iterrows():
+        print("Processing index : %d" % index)
+        if "clothing" in row['bread']:
+            input_df.loc[index, 'label'] = 1
+
+    return input_df
+
+
 def get_labelled_data():
     print('Reading input data file...')
     raw_input_df = pd.read_csv("input.csv")
@@ -73,10 +82,10 @@ def get_labelled_data():
     print("Creating labels...")
     input_df.loc[:, 'label'] = 0
 
-    # new_df = break_according_row_num(input_df, 100)
+    # new_df = break_according_row_num(input_df, 1000)
 
-    new_df = break_data_equally(input_df, 100)
+    new_df = run_on_complete_input(input_df)
 
-    # input_df.to_csv("training_input.csv")
+    new_df.to_csv("training_input.csv")
 
     return new_df
